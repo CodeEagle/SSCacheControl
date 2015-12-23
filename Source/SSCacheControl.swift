@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
-
+public typealias SSCacheControlConfig = (maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool)
 private extension String {
     var date: NSDate! {
         let fmt = NSDateFormatter()
@@ -18,6 +18,30 @@ private extension String {
         fmt.timeZone = NSTimeZone(abbreviation: "GMT")
         return fmt.dateFromString(self)
     }
+}
+
+public extension UIView {
+    private struct AssociatedKeys {
+        static var Config = "ss_firstTimeToken"
+    }
+    private var ss_firtime: Bool {
+        get {
+            return (objc_getAssociatedObject(self, &AssociatedKeys.Config) as? Bool) ?? true
+        }
+        set(max) {
+            objc_setAssociatedObject(self, &AssociatedKeys.Config, max, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    func ss_cacheControlConfig(maxAge: NSTimeInterval) -> SSCacheControlConfig {
+        if ss_firtime {
+            ss_firtime = false
+            return (maxAge: maxAge, ignoreExpires: true, requestNewAfterRetrunCache: true)
+        } else {
+            return (maxAge: maxAge, ignoreExpires: false, requestNewAfterRetrunCache: false)
+        }
+    }
+    
 }
 
 extension NSURLRequest {
@@ -42,14 +66,14 @@ extension NSURLRequest {
      */
     
     func ll_storeResponse(maxAge: NSTimeInterval,
-                            resp: NSHTTPURLResponse?,
-                            data: NSData?) {
-        if let response = resp, url = response.URL, header = response.allHeaderFields as? [String : String], data = data {
-            if let re = NSHTTPURLResponse(URL: url, statusCode: response.statusCode, HTTPVersion: nil, headerFields: header) {
-                let cachedResponse = NSCachedURLResponse(response: re, data: data, userInfo: nil, storagePolicy: NSURLCacheStoragePolicy.Allowed)
-                NSURLCache.sharedURLCache().storeCachedResponse(cachedResponse, forRequest: self)
+        resp: NSHTTPURLResponse?,
+        data: NSData?) {
+            if let response = resp, url = response.URL, header = response.allHeaderFields as? [String : String], data = data {
+                if let re = NSHTTPURLResponse(URL: url, statusCode: response.statusCode, HTTPVersion: nil, headerFields: header) {
+                    let cachedResponse = NSCachedURLResponse(response: re, data: data, userInfo: nil, storagePolicy: NSURLCacheStoragePolicy.Allowed)
+                    NSURLCache.sharedURLCache().storeCachedResponse(cachedResponse, forRequest: self)
+                }
             }
-        }
     }
     
     func ll_lastCachedResponseDataIgnoreExpires(ignoreExpires: Bool = true) -> NSData? {
@@ -72,27 +96,39 @@ extension NSURLRequest {
 }
 
 public func request(URLRequest: URLRequestConvertible,
-     cacheControlMaxAge config: (maxAge: NSTimeInterval, ignoreExpires: Bool) = (0, false),
-                         queue: dispatch_queue_t? = nil,
+    cacheControlMaxAge config: SSCacheControlConfig = (0, false, true),
+    queue: dispatch_queue_t? = nil,
+    canCacheResultClosure closure: ((result: Result<SwiftyJSON.JSON, NSError>) -> Bool)? = nil,
     completionHandler handler: (result: Result<SwiftyJSON.JSON, NSError>) -> Void) -> Request {
         
         let request = URLRequest.URLRequest
         let maxAge = config.maxAge
         request.ll_max_age = maxAge
+        var cacheHash = 0
         let req = Manager.sharedInstance.request(request)
         func goGetData() {
             req.response { (_req, _resp, _data, _err) -> Void in
-                var result: Result<SwiftyJSON.JSON, NSError>?
+                
+                var dataHash = 0
                 if let err = _err {
-                    result = .Failure(err)
-                } else if let resp = _resp, data = _data, req = _req {
-                    req.ll_storeResponse(maxAge, resp: resp, data: data)
-                    result = .Success(JSON(data: data))
-                }
-                if let result = result {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        handler(result: result)
+                        handler(result: .Failure(err))
                     })
+                } else if let resp = _resp, data = _data, req = _req {
+                    dataHash = data.description.hash
+                    let dat: Result<SwiftyJSON.JSON, NSError> = Result.Success(JSON(data: data))
+                    if let cacheConfigClosure = closure {
+                        if cacheConfigClosure(result: dat) {
+                            req.ll_storeResponse(maxAge, resp: resp, data: data)
+                        }
+                    } else {
+                        req.ll_storeResponse(maxAge, resp: resp, data: data)
+                    }
+                    if dataHash != cacheHash && cacheHash != 0 {
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            handler(result: dat)
+                        })
+                    }
                 }
             }
         }
@@ -101,9 +137,13 @@ public func request(URLRequest: URLRequestConvertible,
                 goGetData()
             } else {
                 if let data = request.ll_lastCachedResponseDataIgnoreExpires(config.ignoreExpires) {
+                    cacheHash = data.description.hash
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         handler(result: .Success(JSON(data: data)))
                     })
+                    if config.requestNewAfterRetrunCache {
+                        goGetData()
+                    }
                 } else {
                     goGetData()
                 }
