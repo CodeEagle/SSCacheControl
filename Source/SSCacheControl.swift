@@ -21,6 +21,7 @@ private extension String {
 }
 
 public extension UIView {
+    
     private struct AssociatedKeys {
         static var Config = "ss_firstTimeToken"
     }
@@ -34,12 +35,12 @@ public extension UIView {
     }
     
     func ss_cacheControlConfig(maxAge: NSTimeInterval) -> SSCacheControlConfig {
+        var permision = false
         if ss_firtime {
             ss_firtime = false
-            return (maxAge: maxAge, ignoreExpires: true, requestNewAfterRetrunCache: true)
-        } else {
-            return (maxAge: maxAge, ignoreExpires: false, requestNewAfterRetrunCache: false)
+            permision = true
         }
+        return (maxAge: maxAge, ignoreExpires: permision, requestNewAfterRetrunCache: permision)
     }
     
 }
