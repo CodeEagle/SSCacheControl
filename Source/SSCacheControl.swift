@@ -106,10 +106,14 @@ public func request(URLRequest: URLRequestConvertible,
         let maxAge = config.maxAge
         request.ll_max_age = maxAge
         var cacheHash = 0
+        let manager = Manager.sharedInstance
+        let previousStartRequestsImmediately = manager.startRequestsImmediately
+        manager.startRequestsImmediately = false
         let req = Manager.sharedInstance.request(request)
         func goGetData() {
+            req.resume()
+            manager.startRequestsImmediately = previousStartRequestsImmediately
             req.response { (_req, _resp, _data, _err) -> Void in
-                
                 var dataHash = 0
                 if let err = _err {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -139,6 +143,7 @@ public func request(URLRequest: URLRequestConvertible,
             } else {
                 if let data = request.ll_lastCachedResponseDataIgnoreExpires(config.ignoreExpires) {
                     cacheHash = data.description.hash
+                    manager.startRequestsImmediately = previousStartRequestsImmediately
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         handler(result: .Success(JSON(data: data)))
                     })
