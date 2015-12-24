@@ -111,7 +111,6 @@ public func request(URLRequest: URLRequestConvertible,
         manager.startRequestsImmediately = false
         let req = Manager.sharedInstance.request(request)
         func goGetData() {
-            req.resume()
             manager.startRequestsImmediately = previousStartRequestsImmediately
             req.response { (_req, _resp, _data, _err) -> Void in
                 var dataHash = 0
@@ -129,13 +128,14 @@ public func request(URLRequest: URLRequestConvertible,
                     } else {
                         req.ll_storeResponse(maxAge, resp: resp, data: data)
                     }
-                    if dataHash != cacheHash && cacheHash != 0 {
+                    if !(dataHash == cacheHash && cacheHash == 0) {
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             handler(result: dat)
                         })
                     }
                 }
             }
+            req.resume()
         }
         dispatch_async(queue ?? dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
             if maxAge == 0 {
@@ -147,8 +147,10 @@ public func request(URLRequest: URLRequestConvertible,
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         handler(result: .Success(JSON(data: data)))
                     })
-                    if config.requestNewAfterRetrunCache {
-                        goGetData()
+                    if config.requestNewAfterRetrunCache &&
+                        config.ignoreExpires &&
+                        request.ll_lastCachedResponseDataIgnoreExpires(false) == nil {
+                            goGetData()
                     }
                 } else {
                     goGetData()
