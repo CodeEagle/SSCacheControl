@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SSCacheControl"
-  s.version          = "0.1.2"
+  s.version          = "0.1.3"
   s.summary          = "Client-Side Cache-Control Extension base on Alamofire and SwiftyJSON."
 
 # This description is used to generate tags and improve search results.
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "CodeEagle" => "stasura@hotmail.com" }
   s.source           = { :git => "https://github.com/CodeEagle/SSCacheControl.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  # s.social_media_url = 'https://twitter.com/'
 
   s.platform     = :ios, '8.0'
   s.requires_arc = true
