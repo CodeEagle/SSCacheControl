@@ -33,9 +33,13 @@ Pod::Spec.new do |s|
   #   'SSCacheControl' => ['Pod/Assets/*.png']
   # }
   s.source_files = 'Source/SSCacheControl.swift'
+  s.default_subspec = 'Default'
   s.dependency 'Alamofire'
+  s.subspec 'Default' do |sp|
+      sp.source_files = 'Source/SSCacheControl+Default.swift'
+  end
   s.subspec 'SwiftyJSON' do |sp|
-    sp.source_files = 'Source/*'
+    sp.source_files = 'Source/SSCacheControl+SwiftyJSON.swift'
     sp.dependency 'SwiftyJSON'
   end
 
