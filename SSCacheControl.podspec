@@ -25,21 +25,20 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "CodeEagle" => "stasura@hotmail.com" }
   s.source           = { :git => "https://github.com/CodeEagle/SSCacheControl.git", :tag => s.version.to_s }
-  s.social_media_url = 'https://twitter.com/_SelfStudio'
+  # s.social_media_url = 'https://twitter.com/'
 
   s.platform     = :ios, '8.0'
   s.requires_arc = true
   # s.resource_bundles = {
   #   'SSCacheControl' => ['Pod/Assets/*.png']
   # }
-  s.source_files = 'Source/SSCacheControl.swift'
   s.default_subspec = 'Default'
   s.dependency 'Alamofire'
   s.subspec 'Default' do |sp|
-      sp.source_files = 'Source/SSCacheControl+Default.swift'
+      sp.source_files = 'Source/SSCacheControl.swift','Source/SSCacheControl+Default.swift'
   end
   s.subspec 'SwiftyJSON' do |sp|
-    sp.source_files = 'Source/SSCacheControl+SwiftyJSON.swift'
+    sp.source_files = 'Source/SSCacheControl.swift', 'Source/SSCacheControl+SwiftyJSON.swift'
     sp.dependency 'SwiftyJSON'
   end
 
