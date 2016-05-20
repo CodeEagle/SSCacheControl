@@ -8,7 +8,7 @@
 
 import Foundation
 import Alamofire
-import SwiftyJSON
+
 public typealias SSCacheControlConfig = (maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool)
 private extension String {
 	var date: NSDate! {
@@ -98,8 +98,8 @@ extension NSURLRequest {
 public func request(URLRequest: URLRequestConvertible,
 	cacheControlMaxAge config: SSCacheControlConfig = (0, false, true),
 	queue: dispatch_queue_t? = nil,
-	canCacheResultClosure closure: ((result: Result<SwiftyJSON.JSON, NSError>) -> Bool)? = nil,
-	completionHandler handler: (result: Result<SwiftyJSON.JSON, NSError>) -> Void) -> Request {
+	canCacheResultClosure closure: ((result: Result<NSData, NSError>) -> Bool)? = nil,
+	completionHandler handler: (result: Result<NSData, NSError>) -> Void) -> Request {
 
 		let request = URLRequest.URLRequest
 		let maxAge = config.maxAge
@@ -119,7 +119,7 @@ public func request(URLRequest: URLRequestConvertible,
 					})
 				} else if let resp = _resp, data = _data, req = _req {
 					dataHash = data.description.hash
-					let dat: Result<SwiftyJSON.JSON, NSError> = Result.Success(JSON(data: data))
+					let dat: Result<NSData, NSError> = Result.Success(data)
 					if let cacheConfigClosure = closure {
 						if cacheConfigClosure(result: dat) {
 							req.ll_storeResponse(maxAge, resp: resp, data: data)
@@ -144,7 +144,7 @@ public func request(URLRequest: URLRequestConvertible,
 					cacheHash = data.description.hash
 					manager.startRequestsImmediately = previousStartRequestsImmediately
 					dispatch_async(dispatch_get_main_queue(), { () -> Void in
-						handler(result: .Success(JSON(data: data)))
+						handler(result: .Success(data))
 					})
 					if config.requestNewAfterRetrunCache &&
 					config.ignoreExpires &&

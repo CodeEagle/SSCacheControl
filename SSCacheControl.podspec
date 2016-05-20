@@ -32,7 +32,11 @@ Pod::Spec.new do |s|
   # s.resource_bundles = {
   #   'SSCacheControl' => ['Pod/Assets/*.png']
   # }
-  s.source_files = 'Source/*'
+  s.source_files = 'Source/SSCacheControl.swift'
   s.dependency 'Alamofire'
-  s.dependency 'SwiftyJSON'
+  s.subspec 'SwiftyJSON' do |sp|
+    sp.source_files = 'Source/*'
+    sp.dependency 'SwiftyJSON'
+  end
+
 end
