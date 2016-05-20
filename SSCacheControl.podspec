@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "CodeEagle" => "stasura@hotmail.com" }
   s.source           = { :git => "https://github.com/CodeEagle/SSCacheControl.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/'
+  s.social_media_url = 'https://twitter.com/_SelfStudio'
 
   s.platform     = :ios, '8.0'
   s.requires_arc = true

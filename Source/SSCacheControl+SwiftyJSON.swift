@@ -11,7 +11,7 @@ import Alamofire
 import SwiftyJSON
 
 public func request(URLRequest: URLRequestConvertible,
-	cacheControlMaxAge config: SSCacheControlConfig = (0, false, true),
+	cacheControlMaxAge config: (maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool) = (0, false, true),
 	queue: dispatch_queue_t? = nil,
 	canCacheResultClosure closure: ((result: Result<SwiftyJSON.JSON, NSError>) -> Bool)? = nil,
 	completionHandler handler: (result: Result<SwiftyJSON.JSON, NSError>) -> Void) -> Request {
