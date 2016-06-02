@@ -1,2 +1,2 @@
 github "Alamofire/Alamofire"
-github "SwiftyJSON/SwiftyJSON"
+git "https://github.com/SwiftyJSON/SwiftyJSON.git"
