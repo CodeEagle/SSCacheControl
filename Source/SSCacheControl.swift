@@ -9,7 +9,17 @@
 import Foundation
 import Alamofire
 
-public typealias SSCacheControlConfig = (maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool)
+public struct SSCacheControlConfig {
+	let maxAge: NSTimeInterval
+	let ignoreExpires: Bool
+	let requestNewAfterRetrunCache: Bool
+
+	public init(maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool) {
+		self.maxAge = maxAge
+		self.ignoreExpires = ignoreExpires
+		self.requestNewAfterRetrunCache = requestNewAfterRetrunCache
+	}
+}
 private extension String {
 	var date: NSDate! {
 		let fmt = NSDateFormatter()
@@ -34,13 +44,13 @@ public extension UIView {
 		}
 	}
 
-	func ss_cacheControlConfig(maxAge: NSTimeInterval) -> SSCacheControlConfig {
+	public func ss_cacheControlConfig(maxAge: NSTimeInterval) -> SSCacheControlConfig {
 		var permision = false
 		if ss_firtime {
 			ss_firtime = false
 			permision = true
 		}
-		return (maxAge: maxAge, ignoreExpires: permision, requestNewAfterRetrunCache: permision)
+		return SSCacheControlConfig(maxAge: maxAge, ignoreExpires: permision, requestNewAfterRetrunCache: permision)
 	}
 }
 

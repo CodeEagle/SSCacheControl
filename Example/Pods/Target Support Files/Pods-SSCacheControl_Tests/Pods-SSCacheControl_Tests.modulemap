@@ -1,6 +1,0 @@
-framework module Pods_SSCacheControl_Tests {
-  umbrella header "Pods-SSCacheControl_Tests-umbrella.h"
-
-  export *
-  module * { export * }
-}
