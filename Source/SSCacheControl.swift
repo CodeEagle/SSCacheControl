@@ -9,17 +9,8 @@
 import Foundation
 import Alamofire
 
-public struct SSCacheControlConfig {
-	let maxAge: NSTimeInterval
-	let ignoreExpires: Bool
-	let requestNewAfterRetrunCache: Bool
+public typealias SSCacheControlConfig = (maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool)
 
-	public init(maxAge: NSTimeInterval, ignoreExpires: Bool, requestNewAfterRetrunCache: Bool) {
-		self.maxAge = maxAge
-		self.ignoreExpires = ignoreExpires
-		self.requestNewAfterRetrunCache = requestNewAfterRetrunCache
-	}
-}
 private extension String {
 	var date: NSDate! {
 		let fmt = NSDateFormatter()

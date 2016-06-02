@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 
 public func request(URLRequest: URLRequestConvertible,
-	cacheControlMaxAge config: SSCacheControlConfig = SSCacheControlConfig(maxAge: 0, ignoreExpires: false, requestNewAfterRetrunCache: true),
+	cacheControlMaxAge config: SSCacheControlConfig = (maxAge: 0, ignoreExpires: false, requestNewAfterRetrunCache: true),
 	queue: dispatch_queue_t? = nil,
 	canCacheResultClosure closure: ((result: Result<NSData, NSError>) -> Bool)? = nil,
 	completionHandler handler: (result: Result<NSData, NSError>) -> Void) -> Request {
