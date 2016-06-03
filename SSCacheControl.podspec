@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SSCacheControl"
-  s.version          = "0.1.5"
+  s.version          = "0.1.6"
   s.summary          = "Client-Side Cache-Control Extension base on Alamofire and SwiftyJSON."
 
 # This description is used to generate tags and improve search results.
