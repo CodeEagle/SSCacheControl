@@ -144,7 +144,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 166F13681D0043E500778775 /* Build configuration list for PBXNativeTarget "SSCacheControl" */;
 			buildPhases = (
-				166F13711D00441900778775 /* Carthage */,
 				166F135B1D0043E500778775 /* Sources */,
 				166F135C1D0043E500778775 /* Frameworks */,
 				166F135D1D0043E500778775 /* Headers */,
@@ -163,7 +162,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 166F137C1D00444E00778775 /* Build configuration list for PBXNativeTarget "SSCacheControlSwiftyJSON" */;
 			buildPhases = (
-				166F13881D0044A200778775 /* Carthage */,
 				166F13721D00444E00778775 /* Sources */,
 				166F13731D00444E00778775 /* Frameworks */,
 				166F13741D00444E00778775 /* Headers */,
@@ -258,40 +256,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		166F13711D00441900778775 /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-			);
-			name = Carthage;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-		166F13881D0044A200778775 /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
-			);
-			name = Carthage;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		166F135B1D0043E500778775 /* Sources */ = {
